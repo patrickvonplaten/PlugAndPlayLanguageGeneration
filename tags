@@ -1,0 +1,43 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/0d87063f/
+AttributeController	attribute_controller.py	/^class AttributeController(object):$/;"	c
+CondGPT2LMHeadModel	cond_gpt2.py	/^class CondGPT2LMHeadModel(object):$/;"	c
+F	hf_lg_utils.py	/^import torch.nn.functional as F$/;"	I
+F	main.py	/^import torch.nn.functional as F$/;"	I
+F	to_read.py	/^import torch.nn.functional as F$/;"	I
+PlugAndPlayLanguageGeneration	README.md	/^# PlugAndPlayLanguageGeneration$/;"	c
+SmallConst	to_read.py	/^SmallConst = 1e-15$/;"	v
+TopicAtttributeController	attribute_controller.py	/^class TopicAtttributeController(object):$/;"	c
+UnconditionedAttributeController	attribute_controller.py	/^class UnconditionedAttributeController(AttributeController):$/;"	c
+__call__	attribute_controller.py	/^    def __call__(self, model, input_tokens, key_value_states):$/;"	m	class:AttributeController
+__call__	attribute_controller.py	/^    def __call__(self, model, input_tokens, key_value_states):$/;"	m	class:TopicAtttributeController
+__call__	attribute_controller.py	/^    def __call__(self, model, input_tokens, key_value_states):$/;"	m	class:UnconditionedAttributeController
+__call__	cond_gpt2.py	/^    def __call__(self, input_tokens, past_key_value_embeds):$/;"	m	class:CondGPT2LMHeadModel
+__init__	attribute_controller.py	/^    def __init__(self):$/;"	m	class:AttributeController
+__init__	attribute_controller.py	/^    def __init__(self):$/;"	m	class:UnconditionedAttributeController
+__init__	attribute_controller.py	/^    def __init__(self, topic, tokenizer):$/;"	m	class:TopicAtttributeController
+__init__	cond_gpt2.py	/^    def __init__(self, model, attribute_controller):$/;"	m	class:CondGPT2LMHeadModel
+args	main.py	/^    args = parser.parse_args()$/;"	v
+bag_of_words_files	attribute_controller.py	/^    bag_of_words_files = {$/;"	v	class:TopicAtttributeController
+create_tokenized_input_words	main.py	/^def create_tokenized_input_words(tokenizer, input_words):$/;"	f
+enc	to_read.py	/^enc = GPT2Tokenizer.from_pretrained('gpt-2_pt_models\/345M\/')$/;"	v
+from_conditioned_on_topic	cond_gpt2.py	/^    def from_conditioned_on_topic(cls, topic, model_size):$/;"	m	class:CondGPT2LMHeadModel
+from_unconditioned	cond_gpt2.py	/^    def from_unconditioned(cls, model_size):$/;"	m	class:CondGPT2LMHeadModel
+generate_tokens_auto_reg	main.py	/^def generate_tokens_auto_reg(cond_model, input_tokens, num_words_to_generate, temperature=0.7, t/;"	f
+init_model	cond_gpt2.py	/^    def init_model(self):$/;"	m	class:CondGPT2LMHeadModel
+latent_perturb	to_read.py	/^def latent_perturb(model, args, context=None, sample=True, device='cuda'):$/;"	f
+list_tokens	to_read.py	/^    def list_tokens(word_list):$/;"	f	function:latent_perturb	file:
+main	main.py	/^def main(args):$/;"	f
+np	main.py	/^import numpy as np  # noqa: F401$/;"	I
+np	to_read.py	/^import numpy as np$/;"	I
+parser	main.py	/^    parser = ArgumentParser()$/;"	v
+perturb_past	to_read.py	/^def perturb_past(past, model, prev, args, classifier, good_index=None, stepsize=0.01, vocab_size/;"	f
+read_in_bag_of_words	attribute_controller.py	/^    def read_in_bag_of_words(self):$/;"	m	class:TopicAtttributeController
+run_model	to_read.py	/^def run_model():$/;"	f
+sample_from_hidden	to_read.py	/^def sample_from_hidden(model, args, classifier, context=None, past=None, device='cuda',$/;"	f
+top_k_top_p_filtering	hf_lg_utils.py	/^def top_k_top_p_filtering(logits, top_k, top_p, filter_value=-float('Inf')):$/;"	f
