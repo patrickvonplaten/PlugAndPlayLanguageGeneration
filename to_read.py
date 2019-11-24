@@ -44,8 +44,8 @@ def perturb_past(past, model, prev, args, classifier, good_index=None, stepsize=
     past_perturb_orig = [(np.random.uniform(0.0, 0.0, p.shape).astype('float32'))
                          for p in past]
  
-    if accumulated_hidden is None:
-        accumulated_hidden = 0
+#    if accumulated_hidden is None:
+#        accumulated_hidden = 0
  
     if args.decay:
         decay_mask = torch.arange(0., 1.0 + SmallConst, 1.0/(window_length))[1:]

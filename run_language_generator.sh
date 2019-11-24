@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 cur_path=$(pwd)
 
-${cur_path}/main.py
+context=${1}
+topic=${2}
+
+${cur_path}/main.py --input_words="${context}" --topic="${topic}"
