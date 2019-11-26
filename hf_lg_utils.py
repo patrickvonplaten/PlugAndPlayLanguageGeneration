@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import torch
 import torch.nn.functional as F
+from torch.autograd import Variable
 
 
 def top_k_top_p_filtering(logits, top_k, top_p, filter_value=-float('Inf')):
@@ -25,3 +26,14 @@ def top_k_top_p_filtering(logits, top_k, top_p, filter_value=-float('Inf')):
         indices_to_remove = sorted_indices[sorted_indices_to_remove]
         logits[indices_to_remove] = filter_value
     return logits
+
+
+def torch_to_var(tensor, requires_grad=False, volatile=False):
+    if torch.cuda.is_available():
+        tensor = tensor.cuda()
+    return Variable(tensor, requires_grad=requires_grad, volatile=volatile)
+
+
+def np_to_var(np_array, requires_grad=False, volatile=False):
+    tensor = torch.from_numpy(np_array)
+    return torch_to_var(tensor, requires_grad=requires_grad, volatile=volatile)

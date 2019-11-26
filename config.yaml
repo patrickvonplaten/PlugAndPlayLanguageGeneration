@@ -1,0 +1,19 @@
+num_words_to_generate: 50
+seed: 1
+
+lm_model:
+    size: gpt2-medium
+    type: topic
+    temperature: 1.0
+    top_k: 0
+    top_p: 0.9
+    gm_scale: 0.9
+    fuse_with_real_probs: true
+
+attribute_controller:
+    topic: science
+    window_len: 5
+    kl_scale: 0.1
+    num_grad_steps: 3 
+    step_size: 0.03
+    gamma: 1.5

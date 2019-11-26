@@ -6,19 +6,23 @@ from argparse import ArgumentParser  # noqa: F401
 import torch
 from transformers import GPT2Tokenizer
 from cond_gpt2 import CondGPT2LMHeadModel
+import yaml
 
 
-def main(args):
+def main(args, config):
     input_words = args.input_words
-    num_words_to_generate = args.num_words_to_generate
-    model_size = args.model_size
-    topic = args.topic
-#    seed = args.seed
 
-#    torch.manual_seed(seed)
+    torch.manual_seed(config['seed'])
+    num_words_to_generate = config['num_words_to_generate']
 
+    lm_model_config = config['lm_model']
+    model_size = lm_model_config['size']
     tokenizer = GPT2Tokenizer.from_pretrained(model_size)
-    cond_model = CondGPT2LMHeadModel.from_conditioned_on_topic(model_size, topic, tokenizer)
+
+    if lm_model_config['type'] == 'topic':
+        cond_model = CondGPT2LMHeadModel.from_conditioned_on_topic(model_size, tokenizer, config)
+    else:
+        cond_model = CondGPT2LMHeadModel.from_unconditioned(model_size, config)
 
     tokenized_input_words = create_tokenized_input_words(tokenizer, input_words)
     generated_tokens = generate_tokens_auto_reg(cond_model, tokenized_input_words, num_words_to_generate, tokenizer)
@@ -32,11 +36,11 @@ def create_tokenized_input_words(tokenizer, input_words):
 
 
 def generate_tokens_auto_reg(cond_model, context_tokens, num_words_to_generate, tokenizer):
-    key_value_embeds = None
+    key_value_states = None
     final_tokens = context_tokens[0].tolist()
     input_token = context_tokens
     for word_pos in range(num_words_to_generate):
-        tokens_probs, key_value_embeds = cond_model(input_token, key_value_embeds)
+        tokens_probs, key_value_states = cond_model(input_token, key_value_states)
         sampled_next_token = torch.multinomial(tokens_probs, num_samples=1)
         input_token = sampled_next_token.unsqueeze(0)
         final_tokens += input_token[0].tolist()
@@ -48,10 +52,13 @@ def generate_tokens_auto_reg(cond_model, context_tokens, num_words_to_generate, 
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--input_words', type=str, default='The president')
-    parser.add_argument('--num_words_to_generate', type=int, default=50)
-    parser.add_argument('--model_size', type=str, default='gpt2-medium')
-    parser.add_argument('--lm_generation_type', type=str, default='unconditioned')
-    parser.add_argument('--topic', type=str, default='science')
-    parser.add_argument('--seed', type=int, default=1)
+    parser.add_argument('--config', type=str, default='./config.yaml')
     args = parser.parse_args()
-    main(args)
+
+    with open(args.config, 'r') as stream:
+        try:
+            config = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+
+    main(args, config)
