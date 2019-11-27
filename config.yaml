@@ -4,12 +4,12 @@ seed: 1
 lm_model:
     size: gpt2-medium
     type: cond
-    temperature: 1
+    temperature: 1.0
     top_k: 10
     top_p: 0.9
     gm_scale: 0.9
-    fuse_with_real_probs: true
-    early_stop: 10
+    fuse_with_real_probs: True
+    early_stop: 20
 
 attribute_controller:
     attribute_losses: [
@@ -17,10 +17,15 @@ attribute_controller:
             type: bow,
             topic: science,
             weight: 1
+        },
+        {
+            type: bow,
+            topic: religion,
+            weight: 1
         } 
     ]
     window_len: 4
     kl_scale: 0.01
-    num_grad_steps: 3
-    step_size: 0.02
+    num_grad_steps: 4
+    step_size: 0.01
     gamma: 1.5

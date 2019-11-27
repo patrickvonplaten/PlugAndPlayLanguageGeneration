@@ -1,5 +1,5 @@
 import torch
-from utils.file import read_in_file
+from hf_lg_utils import read_in_file
 
 
 class AttributeLoss(object):

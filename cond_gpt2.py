@@ -42,11 +42,13 @@ class CondGPT2LMHeadModel(object):
 
     def __call__(self, input_tokens, past_key_value_states):
         self.count_token_gen += 1
+
         if self.count_token_gen < self.early_stop:
             conditioned_past_key_value_states = self.attribute_controller(self.model, input_tokens, past_key_value_states)
         else:
             conditioned_past_key_value_states = past_key_value_states
-        tokens_logits, key_value_embeds = self.model(input_tokens, past=conditioned_past_key_value_states)
+
+        tokens_logits, key_value_states = self.model(input_tokens, past=conditioned_past_key_value_states)
         last_token_logits = torch.squeeze(tokens_logits[:, -1, :]).detach()
         heated_last_token_logits = last_token_logits / self.temperature
         token_probs = F.softmax(heated_last_token_logits, dim=-1)
@@ -64,4 +66,4 @@ class CondGPT2LMHeadModel(object):
         if norm_constant < 1:
             filtered_next_token_probs /= norm_constant
 
-        return filtered_next_token_probs, key_value_embeds
+        return filtered_next_token_probs, key_value_states

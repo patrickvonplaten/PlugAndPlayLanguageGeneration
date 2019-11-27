@@ -4,6 +4,12 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 
 
+def read_in_file(path_to_file):
+    with open(path_to_file, 'r') as file_to_read:
+        lines_in_file = file_to_read.readlines()
+    return lines_in_file
+
+
 def top_k_top_p_filtering(logits, top_k, top_p, filter_value=-float('Inf')):
     """ Filter a distribution of logits using top-k and/or nucleus (top-p) filtering
         Args:

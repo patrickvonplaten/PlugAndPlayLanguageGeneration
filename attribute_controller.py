@@ -47,7 +47,8 @@ class AtttributeController(object):
 
         for _ in range(self.num_grad_steps):
             past_key_value_states_perturb = map_key_value_states(map_to_var, past_key_value_states_orig, requires_grad=True)
-            loss = self.get_total_loss(model, prev_input_token, past_key_value_states_perturb, past_key_value_states, orig_logits)
+            comb_past_key_value_states_perturb = list(map(add, past_key_value_states, past_key_value_states_perturb))
+            loss = self.get_total_loss(model, prev_input_token, comb_past_key_value_states_perturb, orig_logits)
             loss.backward()
             grad_norms = self.get_grad_norms(past_key_value_states_perturb, grad_norms, window_mask)
             grads = map_key_value_states(compute_grad, past_key_value_states_perturb, mask=window_mask, grad_norms=grad_norms, gamma=self.gamma, step_size=self.step_size)
@@ -60,8 +61,7 @@ class AtttributeController(object):
         comb_past_key_value_states_perturb = list(map(add, past_key_value_states, past_key_value_states_perturb))
         return comb_past_key_value_states_perturb, grad_norms
 
-    def get_total_loss(self, model, prev_input_token, past_key_value_states_perturb, past_key_value_states, orig_logits):
-        comb_past_key_value_states_perturb = list(map(add, past_key_value_states, past_key_value_states_perturb))
+    def get_total_loss(self, model, prev_input_token, comb_past_key_value_states_perturb, orig_logits):
         next_logit_perturb, _ = model(prev_input_token, past=comb_past_key_value_states_perturb)
         next_probs_perturb = F.softmax(next_logit_perturb, dim=1)  # probabs
 
@@ -82,10 +82,8 @@ class AtttributeController(object):
 
     def get_grad_norms(self, key_value_states, grad_norms, mask):
         if grad_norms is None:
-            grad_norms = map_key_value_states(init_grad_norm, key_value_states, mask=mask, grad_norms=grad_norms, small_const=self.small_const)
-        else:
-            grad_norms = map_key_value_states(update_grad_norm, key_value_states, mask=mask, grad_norms=grad_norms)
-        return grad_norms
+            return map_key_value_states(init_grad_norm, key_value_states, mask=mask, small_const=self.small_const)
+        return map_key_value_states(update_grad_norm, key_value_states, mask=mask, grad_norms=grad_norms)
 
     def __call__(self, model, prev_input_token, past_key_value_states=None, grad_norms=None):
 
@@ -126,13 +124,14 @@ def update_grad_norm(state, state_idx, mask, grad_norms):
     return torch.max(curr_grad_norms, prev_grad_norms)
 
 
-def init_grad_norm(state, state_idx, mask, grad_norms, small_const):
+def init_grad_norm(state, state_idx, mask, small_const):
     return torch.norm(state.grad * mask) + small_const
 
 
 def compute_grad(state, state_idx, mask, grad_norms, gamma, step_size):
-    normed_grad = state.grad / grad_norms[state_idx] ** gamma
-    return -step_size * (normed_grad * mask).data.numpy()
+    normed_grad = state.grad / (grad_norms[state_idx] ** gamma)
+    masked_normed_grad = mask * normed_grad
+    return -step_size * masked_normed_grad.data.numpy()
 
 
 def get_random_state(state, state_idx):

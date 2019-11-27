@@ -48,6 +48,7 @@ def generate_tokens_auto_reg(cond_model, context_tokens, num_words_to_generate, 
         input_token = sampled_next_token.unsqueeze(0)
         final_tokens += input_token[0].tolist()
         if (word_pos) % 5 == 0:
+            print(20 * '=')
             print(tokenizer.decode(final_tokens, clean_up_tokenization_spaces=True, skip_special_tokens=True))
     return final_tokens
 
