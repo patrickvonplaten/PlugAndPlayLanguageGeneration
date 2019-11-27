@@ -8,6 +8,9 @@ from transformers import GPT2Tokenizer
 from cond_gpt2 import CondGPT2LMHeadModel
 import yaml
 
+CONDITIONED_LM_MODEL = 'cond'
+UNCONDITIONED_LM_MODEL = 'uncond'
+
 
 def main(args, config):
     input_words = args.input_words
@@ -19,9 +22,9 @@ def main(args, config):
     model_size = lm_model_config['size']
     tokenizer = GPT2Tokenizer.from_pretrained(model_size)
 
-    if lm_model_config['type'] == 'topic':
-        cond_model = CondGPT2LMHeadModel.from_conditioned_on_topic(model_size, tokenizer, config)
-    else:
+    if lm_model_config['type'] == CONDITIONED_LM_MODEL:
+        cond_model = CondGPT2LMHeadModel.from_conditioned(model_size, tokenizer, config)
+    elif lm_model_config['type'] == UNCONDITIONED_LM_MODEL:
         cond_model = CondGPT2LMHeadModel.from_unconditioned(model_size, config)
 
     tokenized_input_words = create_tokenized_input_words(tokenizer, input_words)
