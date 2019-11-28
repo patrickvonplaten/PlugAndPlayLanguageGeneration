@@ -5,6 +5,6 @@ This code reproduces the model proposed in the paper [**PLUG AND PLAY LANGUAGE M
 - [x] Create baseline language generator 
 - [x] Clean and modularize
 - [x] Create topic relevant language generator
-- [ ] Add discriminator language generator
+- [ ] Add discriminator attribute controller
 
 
